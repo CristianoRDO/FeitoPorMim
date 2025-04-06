@@ -7,15 +7,15 @@
     android:layout_height="match_parent"
     android:background="@color/background_app"
     android:padding="20dp"
-    tools:context=".ui.activities.login.LoginActivity">
+    tools:context=".ui.activities.register.RegisterActivity">
 
     <ImageView
         android:id="@+id/icon"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="20dp"
-        android:contentDescription="@string/login_icon_content_description"
-        android:src="@drawable/ic_login"
+        android:contentDescription="@string/register_icon_content_description"
+        android:src="@drawable/ic_register"
         app:layout_constraintBottom_toTopOf="@id/title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,10 +27,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/login_title"
+        android:layout_marginBottom="15dp"
+        android:text="@string/title_register_form"
         android:textColor="@color/white"
         android:textSize="40sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="@+id/icon"
         app:layout_constraintStart_toStartOf="@+id/icon"
         app:layout_constraintTop_toBottomOf="@+id/icon" />
@@ -39,7 +41,7 @@
         android:id="@+id/text_input_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/email_hint"
+        android:hint="@string/name_hint"
         android:padding="8dp"
         android:textColorHint="@color/white"
         app:boxStrokeColor="@color/color_input_text"
@@ -48,14 +50,14 @@
         app:layout_constraintBottom_toTopOf="@id/text_input_container2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline3"
-        app:placeholderText="@string/email_input_hint">
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:placeholderText="@string/name_input_hint">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_email"
+            android:id="@+id/input_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
+            android:inputType="textPersonName"
             android:padding="20dp"
             android:textColor="@color/white"
             android:textSize="16sp" />
@@ -66,15 +68,43 @@
         android:id="@+id/text_input_container2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/email_hint"
+        android:padding="8dp"
+        android:textColorHint="@color/white"
+        app:boxStrokeColor="@color/color_input_text"
+        app:boxStrokeWidth="2dp"
+        app:hintTextColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/text_input_container3"
+        app:layout_constraintEnd_toEndOf="@+id/text_input_container"
+        app:layout_constraintStart_toStartOf="@+id/text_input_container"
+        app:layout_constraintTop_toBottomOf="@+id/text_input_container"
+        app:placeholderText="@string/email_input_hint">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:padding="20dp"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_container3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:hint="@string/password_hint"
         android:padding="8dp"
         android:textColorHint="@color/white"
         app:boxStrokeColor="@color/color_input_text"
         app:boxStrokeWidth="2dp"
         app:hintTextColor="@color/white"
-        app:layout_constraintEnd_toEndOf="@+id/text_input_container"
-        app:layout_constraintStart_toStartOf="@+id/text_input_container"
-        app:layout_constraintTop_toBottomOf="@+id/text_input_container"
+        app:layout_constraintBottom_toTopOf="@id/register_button"
+        app:layout_constraintEnd_toEndOf="@+id/text_input_container2"
+        app:layout_constraintStart_toStartOf="@+id/text_input_container2"
+        app:layout_constraintTop_toBottomOf="@+id/text_input_container2"
         app:placeholderText="@string/password_input_hint">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -88,56 +118,37 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
-        android:id="@+id/checkbox_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/login_button"
-        app:layout_constraintTop_toBottomOf="@+id/text_input_container2"
-        tools:layout_editor_absoluteX="20dp">
-
-        <CheckBox
-            android:id="@+id/checkbox_stay_logged"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/stay_logged_checkbox"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-
-    </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/login_button"
+        android:id="@+id/register_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/button_color"
         android:paddingHorizontal="20dp"
         android:paddingVertical="15dp"
-        android:text="@string/login_button_text"
+        android:text="@string/register_button_text"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
         app:cornerRadius="10dp"
         app:iconGravity="textStart"
-        app:layout_constraintBottom_toTopOf="@+id/guideline4"
-        app:layout_constraintEnd_toEndOf="@+id/text_input_container2"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="@+id/text_input_container2" />
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="@+id/text_input_container3"
+        app:layout_constraintStart_toStartOf="@+id/text_input_container3"
+        app:layout_constraintTop_toBottomOf="@id/text_input_container3" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.3" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline4"
+        android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.75" />
+        app:layout_constraintGuide_percent="0.95" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
