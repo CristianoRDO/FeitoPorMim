@@ -33,9 +33,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun configListeners(){
-        binding.btnLogin.setOnClickListener{
-            var email = binding.email.text.toString()
-            var senha = binding.senha.text.toString()
+        binding.loginButton.setOnClickListener{
+            var email = binding.inputEmail.text.toString()
+            var senha = binding.inputPassword.text.toString()
 
             firebaseAuth
                 .signInWithEmailAndPassword(email, senha)
@@ -49,8 +49,8 @@ class LoginActivity : AppCompatActivity() {
                 }
         }
 
-        binding.btnCadastrar.setOnClickListener{
+        /*binding.btnCadastrar.setOnClickListener{
 
-        }
+        }*/
     }
 }
