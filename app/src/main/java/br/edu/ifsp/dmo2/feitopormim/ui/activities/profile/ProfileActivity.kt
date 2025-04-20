@@ -9,8 +9,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import br.edu.ifsp.dmo2.feitopormim.R
 import br.edu.ifsp.dmo2.feitopormim.databinding.ActivityProfileBinding
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.home.HomeActivity
+import br.edu.ifsp.dmo2.feitopormim.ui.activities.main.MainActivity
+import br.edu.ifsp.dmo2.feitopormim.ui.activities.register.RegisterActivity
 import br.edu.ifsp.dmo2.feitopormim.util.Base64Converter
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -32,12 +35,12 @@ class ProfileActivity : AppCompatActivity() {
             ActivityResultContracts.PickVisualMedia()) {
                 uri ->
             if (uri != null) {
-                binding.imgProfile.setImageURI(uri)
+                binding.imageProfile.setImageURI(uri)
             } else {
-                Toast.makeText(this, "Nenhuma foto selecionada", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.no_photo_selected), Toast.LENGTH_LONG).show()
             }
         }
-        binding.btnAlterarFoto.setOnClickListener {
+        binding.addImageButton.setOnClickListener {
             galeria.launch(
                 PickVisualMediaRequest(
                 ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -48,14 +51,18 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun configListeners(){
+        binding.arrowBack.setOnClickListener{
+            startActivity(Intent(this, RegisterActivity::class.java))
+            finish()
+        }
+
         binding.registerButton.setOnClickListener{
             if (firebaseAuth.currentUser != null){
                 val email = firebaseAuth.currentUser!!.email.toString()
                 val username = binding.inputUsername.text.toString()
                 val nomeCompleto = binding.inputFullname.text.toString()
 
-                val fotoPerfilString = Base64Converter.drawableToString(binding.imgProfile.
-                drawable)
+                val fotoPerfilString = Base64Converter.drawableToString(binding.imageProfile.drawable)
                 val db = Firebase.firestore
                 val dados = hashMapOf(
                     "fullname" to nomeCompleto,

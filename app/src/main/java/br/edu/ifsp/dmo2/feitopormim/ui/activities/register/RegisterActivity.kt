@@ -34,16 +34,14 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.registerButton.setOnClickListener{
-
             val email = binding.inputEmail.text.toString()
-            val senha = binding.inputPassword.text.toString()
-            val confSenha = binding.inputConfirmPassword.text.toString()
+            val password = binding.inputPassword.text.toString()
+            val confPassword = binding.inputConfirmPassword.text.toString()
 
-
-            if(email.isNotBlank() && senha.isNotBlank() && confSenha.isNotBlank()){
-                if(senha == confSenha){
+            if(email.isNotBlank() && password.isNotBlank() && confPassword.isNotBlank()){
+                if(password == confPassword){
                     firebaseAuth
-                        .createUserWithEmailAndPassword(email, senha)
+                        .createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 startActivity(Intent(this, ProfileActivity::class.java))
@@ -53,10 +51,10 @@ class RegisterActivity : AppCompatActivity() {
                             }
                         }
                 }else{
-                    Toast.makeText(this, "Senhas diferentes", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.passwords_do_not_match), Toast.LENGTH_LONG).show()
                 }
             }else{
-                Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.fill_all_fields), Toast.LENGTH_LONG).show()
             }
         }
     }

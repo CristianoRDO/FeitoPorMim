@@ -68,8 +68,8 @@ class HomeActivity : AppCompatActivity() {
                             posts.add(Post(descricao, bitmap))
                         }
                         adapter = PostAdapter(posts.toTypedArray())
-                        binding.listaPosts.layoutManager = LinearLayoutManager(this)
-                        binding.listaPosts.adapter = adapter
+                        binding.listPosts.layoutManager = LinearLayoutManager(this)
+                        binding.listPosts.adapter = adapter
                     }
                 }
         }

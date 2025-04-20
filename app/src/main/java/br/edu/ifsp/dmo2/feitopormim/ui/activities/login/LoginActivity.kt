@@ -21,19 +21,15 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        checkLogin()
         configListeners()
     }
 
-    private fun checkLogin(){
-        if (firebaseAuth.currentUser != null) {
-            startActivity(Intent(this, HomeActivity::class.java))
+    private fun configListeners(){
+        binding.arrowBack.setOnClickListener{
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
-    }
 
-    private fun configListeners(){
         binding.loginButton.setOnClickListener{
             var email = binding.inputEmail.text.toString()
             var senha = binding.inputPassword.text.toString()
@@ -49,15 +45,5 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
         }
-
-        binding.arrowBack.setOnClickListener{
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
-
-        /*binding.btnCadastrar.setOnClickListener{
-            startActivity(Intent(this, SignUpActivity::class.java))
-            finish()
-        }*/
     }
 }

@@ -16,7 +16,7 @@
         android:backgroundTint="@color/button_color"
         android:paddingHorizontal="20dp"
         android:paddingVertical="15dp"
-        android:text="Logout"
+        android:text="@string/logout_button_text"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -33,7 +33,7 @@
         android:backgroundTint="@color/button_color"
         android:paddingHorizontal="20dp"
         android:paddingVertical="15dp"
-        android:text="Carregar Feed"
+        android:text="@string/load_feed_button_text"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -57,7 +57,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/lista_posts"
+        android:id="@+id/list_posts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
