@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import br.edu.ifsp.dmo2.feitopormim.R
 import br.edu.ifsp.dmo2.feitopormim.databinding.ActivityRegisterBinding
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.login.LoginActivity
+import br.edu.ifsp.dmo2.feitopormim.ui.activities.main.MainActivity
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.profile.ProfileActivity
 import com.google.firebase.auth.FirebaseAuth
 
@@ -27,15 +28,12 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun configListeners(){
-        /*binding.btnVoltar.setOnClickListener{
-            startActivity(Intent(this, LoginActivity::class.java))
+        binding.arrowBack.setOnClickListener{
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
-        }*/
+        }
 
         binding.registerButton.setOnClickListener{
-
-            /*startActivity(Intent(this, PostActivity::class.java))
-            finish()*/
 
             val email = binding.inputEmail.text.toString()
             val senha = binding.inputPassword.text.toString()
