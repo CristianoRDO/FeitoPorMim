@@ -1,13 +1,15 @@
 <resources>
     <string name="app_name">FeitoPorMim</string>
     <string name="login_failed">Erro ao Realizar Login</string>
-    <string name ="login_title">Login</string>
-    <string name ="email_input_hint">Digite seu Email</string>
-    <string name ="password_input_hint">Digite sua Senha</string>
-    <string name ="name_input_hint">Digite seu Nome</string>
-    <string name ="email_hint">Email</string>
-    <string name ="name_hint">Nome</string>
-    <string name ="password_hint">Senha</string>
+    <string name="login_title">Login</string>
+    <string name="email_input_hint">Digite seu Email</string>
+    <string name="password_input_hint">Digite sua Senha</string>
+    <string name="fullname_input_hint">Digite seu Nome Completo</string>
+    <string name="username_input_hint">Digite seu Nome de Usuário</string>
+    <string name="email_hint">Email</string>
+    <string name="username_hint">Email</string>
+    <string name="fullname_hint">Nome Completo</string>
+    <string name="password_hint">Senha</string>
     <string name="stay_logged_checkbox">Manter logado</string>
     <string name="login_button_text">Login</string>
     <string name="register_button_text">Cadastrar</string>

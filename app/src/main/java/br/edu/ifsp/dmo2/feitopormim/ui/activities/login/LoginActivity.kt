@@ -8,6 +8,7 @@ import br.edu.ifsp.dmo2.feitopormim.ui.activities.home.HomeActivity
 import br.edu.ifsp.dmo2.feitopormim.R
 import br.edu.ifsp.dmo2.feitopormim.databinding.ActivityLoginBinding
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.main.MainActivity
+import br.edu.ifsp.dmo2.feitopormim.ui.activities.signup.SignUpActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
@@ -27,7 +28,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun checkLogin(){
         if (firebaseAuth.currentUser != null) {
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, HomeActivity::class.java))
             finish()
         }
     }
@@ -49,8 +50,14 @@ class LoginActivity : AppCompatActivity() {
                 }
         }
 
-        /*binding.btnCadastrar.setOnClickListener{
+        binding.arrowBack.setOnClickListener{
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
 
+        /*binding.btnCadastrar.setOnClickListener{
+            startActivity(Intent(this, SignUpActivity::class.java))
+            finish()
         }*/
     }
 }

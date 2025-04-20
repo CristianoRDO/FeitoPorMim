@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_app"
+    android:padding="20dp"
+    tools:context=".ui.activities.profile.ProfileActivity">
+
+    <ImageView
+        android:id="@+id/img_profile"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/empty_profile"/>
+
+    <Button
+        android:id="@+id/btn_alterar_foto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Alterar Foto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_profile" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/username_hint"
+        android:padding="8dp"
+        android:textColorHint="@color/white"
+        app:boxStrokeColor="@color/color_input_text"
+        app:boxStrokeWidth="2dp"
+        app:hintTextColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/text_input_container2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_alterar_foto"
+        app:placeholderText="@string/username_input_hint">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:padding="20dp"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_container2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/fullname_hint"
+        android:padding="8dp"
+        android:textColorHint="@color/white"
+        app:boxStrokeColor="@color/color_input_text"
+        app:boxStrokeWidth="2dp"
+        app:hintTextColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/text_input_container"
+        app:layout_constraintStart_toStartOf="@+id/text_input_container"
+        app:layout_constraintTop_toBottomOf="@+id/text_input_container"
+        app:placeholderText="@string/fullname_input_hint">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_fullname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:padding="20dp"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/register_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/button_color"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="15dp"
+        android:text="@string/register_button_text"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:cornerRadius="10dp"
+        app:iconGravity="textStart"
+        app:layout_constraintEnd_toEndOf="@+id/text_input_container2"
+        app:layout_constraintStart_toStartOf="@+id/text_input_container2"
+        app:layout_constraintTop_toBottomOf="@id/text_input_container2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,6 +10,16 @@
     tools:context=".ui.activities.login.LoginActivity">
 
     <ImageView
+        android:id="@+id/arrow_back"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="Teste"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/white" />
+
+    <ImageView
         android:id="@+id/icon"
         android:layout_width="100dp"
         android:layout_height="100dp"

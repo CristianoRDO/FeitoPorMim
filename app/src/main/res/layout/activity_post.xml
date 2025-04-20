@@ -5,24 +5,24 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activities.main.MainActivity">
+    tools:context=".ui.activities.post.PostActivity">
 
-    <Button
-        android:id="@+id/logar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Logar"
+    <ImageView
+        android:id="@+id/img_post"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/empty_profile"/>
 
-    <Button
-        android:id="@+id/cadastrar"
+    <TextView
+        android:id="@+id/txt_descricao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cadastrar"
+        android:text="Texto"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logar" />
+        app:layout_constraintTop_toBottomOf="@+id/img_post" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

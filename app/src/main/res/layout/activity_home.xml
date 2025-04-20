@@ -5,24 +5,64 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_app"
+    android:padding="20dp"
     tools:context=".ui.activities.home.HomeActivity">
 
-    <TextView
-        android:id="@+id/textview_bemvindo"
-        android:layout_width="match_parent"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/logout_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bem-Vindo"
+        android:backgroundTint="@color/button_color"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="15dp"
+        android:text="Logout"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:cornerRadius="10dp"
+        app:iconGravity="textStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btn_logout"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/load_feed_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Logout"
+        android:backgroundTint="@color/button_color"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="15dp"
+        android:text="Carregar Feed"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:cornerRadius="10dp"
+        app:iconGravity="textStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logout_button" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/button_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/button_color"
+        android:layout_margin="8dp"
+        android:src="@drawable/ic_add"
+        app:tint="@color/white"
+        app:maxImageSize="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lista_posts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview_bemvindo" />
+        app:layout_constraintTop_toBottomOf="@+id/load_feed_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
