@@ -40,6 +40,7 @@ class ProfileActivity : AppCompatActivity() {
                 Toast.makeText(this, getString(R.string.no_photo_selected), Toast.LENGTH_LONG).show()
             }
         }
+
         binding.addImageButton.setOnClickListener {
             galeria.launch(
                 PickVisualMediaRequest(

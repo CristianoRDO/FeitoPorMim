@@ -5,8 +5,8 @@
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="350dp"
-        android:layout_height="350dp"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
         app:cardCornerRadius="25dp"
         app:cardElevation="10dp"
         app:cardBackgroundColor="@color/white"
@@ -15,15 +15,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:padding="12dp">
 
             <ImageView
                 android:id="@+id/img_post"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="180dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/empty_profile" />
 
@@ -31,15 +32,12 @@
                 android:id="@+id/txt_descricao"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/img_post"
-                android:text="Texto"
-                android:textAlignment="center"
-                android:textSize="24dp" />
+                android:text="Texto dinâmico que pode ser longo ou curto"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

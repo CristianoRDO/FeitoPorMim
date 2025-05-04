@@ -4,4 +4,21 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
+    <style name="CustomDialogTheme" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <!-- Cor de fundo do diálogo -->
+        <item name="colorSurface">@color/white</item>
+
+        <!-- Cor do texto do título e do conteúdo -->
+        <item name="colorOnSurface">@color/black</item>
+
+        <!-- Cor de fundo dos botões -->
+        <item name="colorPrimary">#1976D2 </item>
+
+        <!-- Cor do texto dos botões -->
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Cor de fundo do layout personalizado -->
+        <item name="android:background">@color/white</item>
+    </style>
 </resources>

@@ -2,34 +2,21 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background_app"
-    android:padding="20dp"
-    tools:context=".ui.activities.post.PostActivity">
+    android:layout_height="wrap_content"
+    android:padding="20dp">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Novo Post"
-        android:textColor="@color/white"
-        android:textSize="32sp"
+        android:textColor="@color/black"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/arrow_back"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:contentDescription="@string/arrow_back_content_description"
-        android:src="@drawable/ic_arrow_back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/white" />
 
     <FrameLayout
         android:id="@+id/profileImageContainer"
@@ -40,7 +27,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/image_post"
+            android:id="@+id/imagePost"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/ic_image"
@@ -59,51 +46,65 @@
     </FrameLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/text_input_container"
+        android:id="@+id/text_input_container2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/username_hint"
+        android:hint="teste"
         android:padding="8dp"
-        android:textColorHint="@color/white"
-        app:boxStrokeColor="@color/color_input_text"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="@color/black"
         app:boxStrokeWidth="2dp"
-        app:hintTextColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@id/text_input_container"
+        app:hintTextColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileImageContainer"
-        app:placeholderText="@string/username_input_hint">
+        app:placeholderText="teste">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_username"
+            android:id="@+id/input_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:lines="5"
-            android:maxLines="10"
+            android:inputType="numberDecimal"
             android:padding="20dp"
-            android:scrollbars="vertical"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="16sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/register_button"
+        android:id="@+id/confirm_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/button_color"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/blue"
         android:paddingHorizontal="20dp"
         android:paddingVertical="15dp"
-        android:text="@string/register_button_text"
+        android:text="adicio0nar"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
         app:cornerRadius="10dp"
         app:iconGravity="textStart"
-        app:layout_constraintEnd_toEndOf="@+id/text_input_container"
-        app:layout_constraintStart_toStartOf="@+id/text_input_container"
-        app:layout_constraintTop_toBottomOf="@id/text_input_container" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_input_container2"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cancel_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/red"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="15dp"
+        android:text="cancelar"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:cornerRadius="10dp"
+        app:iconGravity="textStart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/confirm_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
