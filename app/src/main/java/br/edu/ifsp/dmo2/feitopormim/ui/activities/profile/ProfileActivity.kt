@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import br.edu.ifsp.dmo2.feitopormim.R
 import br.edu.ifsp.dmo2.feitopormim.databinding.ActivityProfileBinding
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.home.HomeActivity
+import br.edu.ifsp.dmo2.feitopormim.ui.activities.login.LoginActivity
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.main.MainActivity
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.register.RegisterActivity
 import br.edu.ifsp.dmo2.feitopormim.util.Base64Converter
@@ -23,6 +25,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProfileBinding
     private val firebaseAuth = FirebaseAuth.getInstance()
+    private lateinit var galery: ActivityResultLauncher<PickVisualMediaRequest>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,30 +34,30 @@ class ProfileActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        val galeria = registerForActivityResult(
-            ActivityResultContracts.PickVisualMedia()) {
-                uri ->
-            if (uri != null) {
-                binding.imageProfile.setImageURI(uri)
-            } else {
-                Toast.makeText(this, getString(R.string.no_photo_selected), Toast.LENGTH_LONG).show()
-            }
-        }
-
-        binding.addImageButton.setOnClickListener {
-            galeria.launch(
-                PickVisualMediaRequest(
-                ActivityResultContracts.PickVisualMedia.ImageOnly)
-            )
-        }
-
+        verifyAuthentication()
+        setupGalery()
         configListeners()
+    }
+
+    private fun verifyAuthentication() {
+        val user = firebaseAuth.currentUser
+        if (user != null) {
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+        }
     }
 
     private fun configListeners(){
         binding.arrowBack.setOnClickListener{
             startActivity(Intent(this, RegisterActivity::class.java))
             finish()
+        }
+
+        binding.addImageButton.setOnClickListener {
+            galery.launch(
+                PickVisualMediaRequest(
+                    ActivityResultContracts.PickVisualMedia.ImageOnly)
+            )
         }
 
         binding.registerButton.setOnClickListener{
@@ -76,6 +79,17 @@ class ProfileActivity : AppCompatActivity() {
                         startActivity(Intent(this, HomeActivity::class.java))
                         finish()
                     }
+            }
+        }
+    }
+
+    private fun setupGalery(){
+        galery = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {
+                uri ->
+            if (uri != null) {
+                binding.imageProfile.setImageURI(uri)
+            } else {
+                Toast.makeText(this, getString(R.string.no_photo_selected), Toast.LENGTH_LONG).show()
             }
         }
     }

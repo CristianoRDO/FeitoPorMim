@@ -7,7 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import br.edu.ifsp.dmo2.feitopormim.R
 import br.edu.ifsp.dmo2.feitopormim.databinding.ActivitySignUpBinding
+import br.edu.ifsp.dmo2.feitopormim.ui.activities.home.HomeActivity
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.login.LoginActivity
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.profile.ProfileActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -24,9 +26,17 @@ class SignUpActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
+        verifyAuthentication()
         configListeners()
     }
 
+    private fun verifyAuthentication() {
+        val user = firebaseAuth.currentUser
+        if (user != null) {
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+        }
+    }
 
     private fun configListeners(){
         binding.btnVoltar.setOnClickListener{
@@ -57,10 +67,10 @@ class SignUpActivity : AppCompatActivity() {
                             }
                         }
                 }else{
-                    Toast.makeText(this, "Senhas diferentes", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.passwords_do_not_match), Toast.LENGTH_LONG).show()
                 }
             }else{
-                Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.fill_all_fields), Toast.LENGTH_LONG).show()
             }
         }
     }

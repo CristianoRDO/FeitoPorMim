@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import br.edu.ifsp.dmo2.feitopormim.R
 import br.edu.ifsp.dmo2.feitopormim.databinding.ActivityRegisterBinding
+import br.edu.ifsp.dmo2.feitopormim.ui.activities.home.HomeActivity
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.login.LoginActivity
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.main.MainActivity
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.profile.ProfileActivity
@@ -24,7 +25,17 @@ class RegisterActivity : AppCompatActivity() {
 
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        verifyAuthentication()
         configListeners()
+    }
+
+    private fun verifyAuthentication() {
+        val user = firebaseAuth.currentUser
+        if (user != null) {
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+        }
     }
 
     private fun configListeners(){

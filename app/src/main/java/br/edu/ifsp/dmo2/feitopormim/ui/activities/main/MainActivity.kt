@@ -20,12 +20,13 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        checkLogin()
+        verifyAuthentication()
         configListeners()
     }
 
-    private fun checkLogin(){
-        if (firebaseAuth.currentUser != null) {
+    private fun verifyAuthentication() {
+        val user = firebaseAuth.currentUser
+        if (user != null) {
             startActivity(Intent(this, HomeActivity::class.java))
             finish()
         }

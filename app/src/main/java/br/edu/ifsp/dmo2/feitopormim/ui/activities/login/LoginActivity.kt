@@ -21,7 +21,17 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        verifyAuthentication()
         configListeners()
+    }
+
+    private fun verifyAuthentication() {
+        val user = firebaseAuth.currentUser
+        if (user != null) {
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+        }
     }
 
     private fun configListeners(){
