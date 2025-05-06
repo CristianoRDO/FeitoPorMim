@@ -3,16 +3,21 @@ package br.edu.ifsp.dmo2.feitopormim.ui.activities.myProfile
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuProvider
 import br.edu.ifsp.dmo2.feitopormim.R
 import br.edu.ifsp.dmo2.feitopormim.databinding.ActivityMyProfileBinding
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.home.HomeActivity
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.login.LoginActivity
+import br.edu.ifsp.dmo2.feitopormim.ui.activities.main.MainActivity
 import br.edu.ifsp.dmo2.feitopormim.util.Base64Converter
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -32,10 +37,42 @@ class MyProfileActivity : AppCompatActivity() {
         binding = ActivityMyProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.toolbar)
+        initializeActionBar()
         verifyAuthentication()
         setupGalery()
         loadDataUser()
         configListeners()
+    }
+
+    private fun initializeActionBar(){
+        addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.main_menu, menu)
+                }
+
+                override fun onMenuItemSelected(item: MenuItem): Boolean {
+                    when (item.itemId) {
+                        R.id.option_menu_home_page -> {
+                            startActivity(Intent(applicationContext, HomeActivity::class.java))
+                            finish()
+                        }
+                        R.id.option_menu_my_profile -> {
+                            startActivity(Intent(applicationContext, MyProfileActivity::class.java))
+                            finish()
+                        }
+                        R.id.option_menu_logout -> {
+                            firebaseAuth.signOut()
+                            startActivity(Intent(applicationContext, MainActivity::class.java))
+                            finish()
+                        }
+                    }
+                    return true
+                }
+
+            }
+        )
     }
 
     private fun verifyAuthentication() {
@@ -57,44 +94,38 @@ class MyProfileActivity : AppCompatActivity() {
                         val document = task.result
                         if (document != null && document.exists()) {
                             // Recupera os dados do documento
+                            val fullname = document.data!!["fullname"].toString()
                             val username = document.data!!["username"].toString()
                             val imageString = document.data!!["picture"].toString()
                             val bitmap = Base64Converter.stringToBitmap(imageString)
 
                             binding.imageProfile.setImageBitmap(bitmap)
                             binding.inputUsername.setText(username)
+                            binding.inputFullname.setText(fullname)
                         } else {
-                            Toast.makeText(this,
-                                getString(R.string.user_not_found), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, getString(R.string.user_not_found), Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        Toast.makeText(this,
-                            getString(R.string.error_loading_user_data), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.error_loading_user_data), Toast.LENGTH_SHORT).show()
                     }
                 }
         }
     }
 
     private fun configListeners(){
-        binding.arrowBack.setOnClickListener{
-            startActivity(Intent(this, HomeActivity::class.java))
-            finish()
-        }
-
         binding.addImageButton.setOnClickListener {
             galery.launch(
-                PickVisualMediaRequest(
-                    ActivityResultContracts.PickVisualMedia.ImageOnly)
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
             )
         }
 
         binding.myCheckBox.setOnCheckedChangeListener{ _, isChecked ->
             if (isChecked) {
-                binding.textInputContainer2.visibility = View.VISIBLE
                 binding.textInputContainer3.visibility = View.VISIBLE
+                binding.textInputContainer4.visibility = View.VISIBLE
             } else {
-                binding.textInputContainer2.visibility = View.GONE
                 binding.textInputContainer3.visibility = View.GONE
+                binding.textInputContainer4.visibility = View.GONE
             }
         }
 
@@ -118,8 +149,7 @@ class MyProfileActivity : AppCompatActivity() {
                     val newPassword = binding.inputPassword.text.toString()
 
                     if (currentPassword.isEmpty() || newPassword.isEmpty()) {
-                        Toast.makeText(this,
-                            getString(R.string.fill_all_password_fields), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.fill_all_password_fields), Toast.LENGTH_SHORT).show()
                     } else{
                         // Autenticar novamente para poder trocar a senha
                         val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)

@@ -1,9 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.FeitoPorMim" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.FeitoPorMim" parent="Theme.Material3.DayNight.NoActionBar"/>
+
+    <style name="Theme.FeitoPorMim" parent="Base.Theme.FeitoPorMim">
+        <item name="actionOverflowButtonStyle">@style/ActionOverflowButton</item>
+        <item name="android:itemBackground">@drawable/custom_item_menu</item>
+        <item name="android:actionOverflowMenuStyle">@color/white</item>
     </style>
 
-    <style name="Theme.FeitoPorMim" parent="Base.Theme.FeitoPorMim" />
+    <style name="ActionOverflowButton" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">@color/white</item>
+    </style>
+
 </resources>

@@ -81,6 +81,8 @@
         android:textColorHint="@color/white"
         app:boxStrokeColor="@color/color_input_text"
         app:boxStrokeWidth="2dp"
+        app:endIconMode="password_toggle"
+        app:endIconTint="#FFF"
         app:hintTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/text_input_container"
         app:layout_constraintStart_toStartOf="@+id/text_input_container"

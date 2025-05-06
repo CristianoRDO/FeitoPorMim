@@ -50,14 +50,14 @@ class SignUpActivity : AppCompatActivity() {
             finish()*/
 
             val email = binding.email.text.toString()
-            val senha = binding.senha.text.toString()
-            val confSenha = binding.confirmSenha.text.toString()
+            val password = binding.senha.text.toString()
+            val confPassword = binding.confirmSenha.text.toString()
 
 
-            if(email.isNotBlank() && senha.isNotBlank() && confSenha.isNotBlank()){
-                if(senha == confSenha){
+            if(email.isNotBlank() && password.isNotBlank() && confPassword.isNotBlank()){
+                if(password == confPassword){
                     firebaseAuth
-                        .createUserWithEmailAndPassword(email, senha)
+                        .createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 startActivity(Intent(this, ProfileActivity::class.java))

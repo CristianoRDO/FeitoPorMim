@@ -5,12 +5,16 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.edu.ifsp.dmo2.feitopormim.R
 import br.edu.ifsp.dmo2.feitopormim.data.entity.Post
@@ -43,9 +47,41 @@ class HomeActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
+        setSupportActionBar(binding.toolbar)
+        initializeActionBar()
         verifyAuthentication()
         setupGalery()
         configListeners()
+    }
+
+    private fun initializeActionBar(){
+        addMenuProvider(
+            object : MenuProvider{
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.main_menu, menu)
+                }
+
+                override fun onMenuItemSelected(item: MenuItem): Boolean {
+                    when (item.itemId) {
+                        R.id.option_menu_home_page -> {
+                            startActivity(Intent(applicationContext,HomeActivity::class.java))
+                            finish()
+                        }
+                        R.id.option_menu_my_profile -> {
+                            startActivity(Intent(applicationContext, MyProfileActivity::class.java))
+                            finish()
+                        }
+                        R.id.option_menu_logout -> {
+                            firebaseAuth.signOut()
+                            startActivity(Intent(applicationContext, MainActivity::class.java))
+                            finish()
+                        }
+                    }
+                    return true
+                }
+
+            }
+        )
     }
 
     private fun verifyAuthentication() {
@@ -57,16 +93,8 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun configListeners(){
-        binding.logoutButton.setOnClickListener{
-            firebaseAuth.signOut()
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
-
         binding.loadFeedButton.setOnClickListener {
-            startActivity(Intent(this, MyProfileActivity::class.java))
-            finish()
-            //loadFeed()
+            loadFeed()
         }
 
         binding.buttonAddPost.setOnClickListener {
