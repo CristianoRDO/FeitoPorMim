@@ -15,28 +15,74 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:padding="12dp">
+
+            <TextView
+                android:id="@+id/username_post"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Fulano de Tal"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/datetime_post"
+                app:layout_constraintHorizontal_weight="1" />
+
+            <TextView
+                android:id="@+id/datetime_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="20/12/2025"
+                android:textSize="12sp"
+                app:layout_constraintTop_toTopOf="@id/username_post"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <ImageView
                 android:id="@+id/img_post"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="180dp"
+                android:layout_marginTop="8dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/empty_profile" />
+                android:src="@drawable/empty_profile"
+                app:layout_constraintTop_toBottomOf="@id/username_post"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <ImageView
+                android:id="@+id/location_post"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_location"
+                app:layout_constraintTop_toBottomOf="@id/img_post"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/location_text_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="Araraquara, SP"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/location_post"
+                app:layout_constraintStart_toEndOf="@id/location_post"
+                app:layout_constraintTop_toTopOf="@id/location_post" />
 
             <TextView
                 android:id="@+id/txt_descricao"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Texto dinâmico que pode ser longo ou curto"
                 android:layout_marginTop="8dp"
-                android:textSize="16sp" />
+                android:text="Texto dinâmico que pode ser longo ou curto"
+                android:textSize="16sp"
+                app:layout_constraintTop_toBottomOf="@id/location_text_post"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 

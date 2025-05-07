@@ -27,9 +27,15 @@ import br.edu.ifsp.dmo2.feitopormim.ui.adapter.PostAdapter
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.myProfile.MyProfileActivity
 import br.edu.ifsp.dmo2.feitopormim.util.Base64Converter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class HomeActivity : AppCompatActivity() {
 
@@ -52,6 +58,7 @@ class HomeActivity : AppCompatActivity() {
         verifyAuthentication()
         setupGalery()
         configListeners()
+        loadFeed()
     }
 
     private fun initializeActionBar(){
@@ -111,7 +118,25 @@ class HomeActivity : AppCompatActivity() {
             }
 
             dialogBinding.confirmButton.setOnClickListener {
-                
+                if (firebaseAuth.currentUser != null){
+                    val email = firebaseAuth.currentUser!!.email.toString()
+                    val textPost = dialogBinding.inputTextPost.text.toString()
+                    val imagePost = Base64Converter.drawableToString(dialogBinding.imagePost.drawable)
+                    val db = com.google.firebase.Firebase.firestore
+
+                    val dados = hashMapOf(
+                        "userPost" to email,
+                        "textPost" to textPost,
+                        "datePost" to Timestamp.now(),
+                        "imagePost" to imagePost
+                    )
+                    db.collection("posts")
+                        .add(dados)
+                        .addOnSuccessListener {
+                            dialog.dismiss()
+                            loadFeed()
+                        }
+                }
             }
 
             dialogBinding.cancelButton.setOnClickListener {
@@ -121,25 +146,65 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadFeed(){
+    private fun loadFeed() {
         val db = Firebase.firestore
-        db.collection("posts").get()
+        db.collection("posts")
+            .orderBy("datePost", Query.Direction.DESCENDING)
+            .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val document = task.result
-                    posts = ArrayList()
+                    val postsTemp = ArrayList<Post>() // Lista temporária para armazenar os posts enquanto recupera os nomes
+
+                    val postFetchCount = document.documents.size
+                    var postsFetched = 0 // Contador para verificar quando todos os posts foram processados
+
                     for (document in document.documents) {
-                        val imageString = document.data!!["image"].toString()
-                        val bitmap = Base64Converter.stringToBitmap(imageString)
-                        val descricao = document.data!!["text"].toString()
-                        posts.add(Post(descricao, bitmap))
+                        val userPost = document.data!!["userPost"].toString()
+                        var usernamePost = ""
+
+                        Log.d("Username", "Buscando usuário com o email: $userPost")
+
+                        // Consulta assíncrona para buscar o nome do usuário
+                        db.collection("user")
+                            .document(userPost) // O documento da coleção "user" é o e-mail do usuário
+                            .get()
+                            .addOnSuccessListener { userDocument ->
+                                if (userDocument.exists()) {
+                                    usernamePost = userDocument.data!!["username"].toString()
+                                    Log.d("Username", "Nome do usuário: $usernamePost")
+                                } else {
+                                    Log.d("Username", "Usuário não encontrado")
+                                }
+
+                                // Agora, adicionar o post à lista após obter o nome do usuário
+                                val imageString = document.data!!["imagePost"].toString()
+                                val imagePost = Base64Converter.stringToBitmap(imageString)
+                                val textPost = document.data!!["textPost"].toString()
+
+                                val datePost = document.getTimestamp("datePost")
+                                val date: Date? = datePost?.toDate()
+                                val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                                val dataFormatada: String = formatter.format(date)
+
+                                postsTemp.add(Post(usernamePost, dataFormatada, textPost, imagePost))
+
+                                postsFetched++
+                                if (postsFetched == postFetchCount) {
+                                    // Quando todos os posts forem processados, defina o adaptador
+                                    adapter = PostAdapter(postsTemp.toTypedArray())
+                                    binding.listPosts.layoutManager = LinearLayoutManager(this)
+                                    binding.listPosts.adapter = adapter
+                                }
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.d("Username", "Erro ao buscar usuário: ", exception)
+                            }
                     }
-                    adapter = PostAdapter(posts.toTypedArray())
-                    binding.listPosts.layoutManager = LinearLayoutManager(this)
-                    binding.listPosts.adapter = adapter
                 }
             }
     }
+
 
     private fun setupGalery(){
         galery = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->

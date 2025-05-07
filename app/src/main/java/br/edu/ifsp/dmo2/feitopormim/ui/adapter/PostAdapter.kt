@@ -14,7 +14,9 @@ class PostAdapter(private val posts: Array<Post>) :
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
     {
         val imgPost : ImageView = view.findViewById(R.id.img_post)
-        val txtDescricao : TextView = view.findViewById(R.id.txt_descricao)
+        val txtPost : TextView = view.findViewById(R.id.txt_descricao)
+        val usernamePost : TextView = view.findViewById(R.id.username_post)
+        val dateTimePost : TextView = view.findViewById(R.id.datetime_post)
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -25,7 +27,9 @@ class PostAdapter(private val posts: Array<Post>) :
         return posts.size
     }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.txtDescricao.text = posts[position].getDescricao()
+        holder.txtPost.text = posts[position].getDescricao()
         holder.imgPost.setImageBitmap(posts[position].getFoto())
+        holder.usernamePost.text = posts[position].getUsername()
+        holder.dateTimePost.text = posts[position].getDate().toString()
     }
 }

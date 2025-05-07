@@ -137,8 +137,10 @@ class MyProfileActivity : AppCompatActivity() {
                 val image = binding.imageProfile.drawable
                 val imageBase64 = Base64Converter.drawableToString(image)
                 val username = binding.inputUsername.text.toString()
+                val fullname = binding.inputFullname.text.toString()
 
                 val updateData: MutableMap<String, Any> = hashMapOf(
+                    "fullname" to fullname,
                     "username" to username,
                     "picture" to imageBase64
                 )
@@ -146,41 +148,36 @@ class MyProfileActivity : AppCompatActivity() {
                 // Se o checkbox estiver marcado, tentar trocar a senha primeiro
                 if (binding.myCheckBox.isChecked) {
                     val currentPassword = binding.inputPassword.text.toString()
-                    val newPassword = binding.inputPassword.text.toString()
+                    val newPassword = binding.inputNewPassword.text.toString()
 
-                    if (currentPassword.isEmpty() || newPassword.isEmpty()) {
+                    if (currentPassword.isBlank() || newPassword.isBlank() || username.isBlank() || fullname.isBlank() ) {
                         Toast.makeText(this, getString(R.string.fill_all_password_fields), Toast.LENGTH_SHORT).show()
                     } else{
-                        // Autenticar novamente para poder trocar a senha
                         val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
                         user.reauthenticate(credential)
                             .addOnSuccessListener {
-                                Toast.makeText(this, "Senha correta", Toast.LENGTH_SHORT).show()
-                                // Senha atual está correta, trocar senha e atualizar dados
-                                /*user.updatePassword(novaSenha)
+                                user.updatePassword(newPassword)
                                     .addOnSuccessListener {
-                                        Log.d("Auth", "Senha alterada com sucesso.")
-
-                                        // Atualizar os dados do Firestore
                                         val userDocRef = db.collection("user").document(user.email!!)
                                         userDocRef.update(updateData)
                                             .addOnSuccessListener {
-                                                Log.d("Firestore", "Dados atualizados com sucesso.")
+                                                Toast.makeText(this, "Dados Atualizados com Sucesso!", Toast.LENGTH_SHORT).show()
+                                                clearInputPassword()
                                             }
                                             .addOnFailureListener { exception ->
+                                                Toast.makeText(this, "Erros ao Atualizar os Dados.", Toast.LENGTH_SHORT).show()
                                                 Log.e("Firestore", "Erro ao atualizar dados: ${exception.message}")
                                             }
                                     }
                                     .addOnFailureListener { exception ->
                                         Log.e("Auth", "Erro ao alterar senha: ${exception.message}")
-                                    }*/
+                                    }
                             }
                             .addOnFailureListener {
                                 Toast.makeText(this, getString(R.string.incorrect_current_password), Toast.LENGTH_SHORT).show()
                             }
                     }
                 } else {
-                    // Apenas atualizar os dados (sem alterar a senha)
                     val userDocRef = db.collection("user").document(user.email!!)
                     userDocRef.update(updateData)
                 }
@@ -196,5 +193,11 @@ class MyProfileActivity : AppCompatActivity() {
                 Toast.makeText(this, getString(R.string.no_photo_selected), Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    private fun clearInputPassword(){
+        binding.myCheckBox.isChecked = false
+        binding.textInputContainer3.visibility = View.GONE
+        binding.textInputContainer4.visibility = View.GONE
     }
 }
