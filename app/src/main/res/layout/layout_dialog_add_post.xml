@@ -45,6 +45,18 @@
             android:padding="6dp" />
     </FrameLayout>
 
+    <TextView
+        android:id="@+id/location_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sem Localização"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileImageContainer" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_container2"
         android:layout_width="match_parent"
@@ -57,7 +69,7 @@
         app:hintTextColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileImageContainer"
+        app:layout_constraintTop_toBottomOf="@+id/location_post"
         app:placeholderText="teste">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -72,11 +84,20 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <CheckBox
+        android:id="@+id/myCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gravar Localização"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_input_container2" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/confirm_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="18dp"
         android:backgroundTint="@color/blue"
         android:paddingHorizontal="20dp"
         android:paddingVertical="15dp"
@@ -88,7 +109,7 @@
         app:iconGravity="textStart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_input_container2"
+        app:layout_constraintTop_toBottomOf="@+id/myCheckBox"
         app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.button.MaterialButton

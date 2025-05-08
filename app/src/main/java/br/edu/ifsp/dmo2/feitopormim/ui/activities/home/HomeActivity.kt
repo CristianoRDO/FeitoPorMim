@@ -1,14 +1,12 @@
 package br.edu.ifsp.dmo2.feitopormim.ui.activities.home
 
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.net.Uri
+import android.location.Address
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
@@ -22,10 +20,10 @@ import br.edu.ifsp.dmo2.feitopormim.databinding.ActivityHomeBinding
 import br.edu.ifsp.dmo2.feitopormim.databinding.LayoutDialogAddPostBinding
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.login.LoginActivity
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.main.MainActivity
-import br.edu.ifsp.dmo2.feitopormim.ui.activities.post.PostActivity
 import br.edu.ifsp.dmo2.feitopormim.ui.adapter.PostAdapter
 import br.edu.ifsp.dmo2.feitopormim.ui.activities.myProfile.MyProfileActivity
 import br.edu.ifsp.dmo2.feitopormim.util.Base64Converter
+import br.edu.ifsp.dmo2.feitopormim.util.LocalizacaoHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -36,15 +34,20 @@ import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.drawable.VectorDrawable
+import androidx.core.app.ActivityCompat
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
 
     private lateinit var binding: ActivityHomeBinding
     private var currentDialogBinding: LayoutDialogAddPostBinding? = null
     private val firebaseAuth = FirebaseAuth.getInstance()
-    private lateinit var posts: ArrayList<Post>
     private lateinit var adapter: PostAdapter
     private lateinit var galery: ActivityResultLauncher<PickVisualMediaRequest>
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +89,6 @@ class HomeActivity : AppCompatActivity() {
                     }
                     return true
                 }
-
             }
         )
     }
@@ -117,19 +119,51 @@ class HomeActivity : AppCompatActivity() {
                 galery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             }
 
+            dialogBinding.myCheckBox.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    dialogBinding.locationPost.setText("Buscando localização...")
+                    dialogBinding.confirmButton.isEnabled = false
+                    solicitarLocalizacao()
+                } else {
+                    dialogBinding.locationPost.setText("Sem Localização")
+                }
+            }
+
             dialogBinding.confirmButton.setOnClickListener {
                 if (firebaseAuth.currentUser != null){
+
                     val email = firebaseAuth.currentUser!!.email.toString()
-                    val textPost = dialogBinding.inputTextPost.text.toString()
-                    val imagePost = Base64Converter.drawableToString(dialogBinding.imagePost.drawable)
+                    val textPost = dialogBinding.inputTextPost.text.toString().trim()
+                    val locationPost = dialogBinding.locationPost.text.toString().ifBlank { "Sem Localização" }
                     val db = com.google.firebase.Firebase.firestore
+                    val drawable = dialogBinding.imagePost.drawable
+
+                    when {
+                        textPost.isBlank() -> {
+                            Toast.makeText(this, "Preencha o campo Descrição.", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener
+                        }
+                        drawable is VectorDrawable || drawable is VectorDrawableCompat -> {
+                            Toast.makeText(this, "Nenhuma imagem adicionada ao post.", Toast.LENGTH_SHORT).show()
+                            return@setOnClickListener
+                        }
+                    }
+
+                    val imagePost = Base64Converter.drawableToString(drawable)
+
+                    if (imagePost.isBlank()) {
+                        Toast.makeText(this, "Erro ao converter a imagem.", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
 
                     val dados = hashMapOf(
                         "userPost" to email,
                         "textPost" to textPost,
                         "datePost" to Timestamp.now(),
+                        "locationPost" to locationPost,
                         "imagePost" to imagePost
                     )
+
                     db.collection("posts")
                         .add(dados)
                         .addOnSuccessListener {
@@ -181,16 +215,22 @@ class HomeActivity : AppCompatActivity() {
                                 val imageString = document.data!!["imagePost"].toString()
                                 val imagePost = Base64Converter.stringToBitmap(imageString)
                                 val textPost = document.data!!["textPost"].toString()
+                                val locationPost = document.data!!["locationPost"].toString()
 
                                 val datePost = document.getTimestamp("datePost")
                                 val date: Date? = datePost?.toDate()
                                 val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                                 val dataFormatada: String = formatter.format(date)
 
-                                postsTemp.add(Post(usernamePost, dataFormatada, textPost, imagePost))
+                                postsTemp.add(Post(usernamePost, dataFormatada, textPost, locationPost, imagePost))
 
                                 postsFetched++
                                 if (postsFetched == postFetchCount) {
+                                    // Ordena os posts localmente antes de adicionar ao adaptador
+                                    postsTemp.sortByDescending {
+                                        stringToDate(it.getDate())
+                                    } // Ordena pela data (seja no formato timestamp ou data formatada)
+
                                     // Quando todos os posts forem processados, defina o adaptador
                                     adapter = PostAdapter(postsTemp.toTypedArray())
                                     binding.listPosts.layoutManager = LinearLayoutManager(this)
@@ -205,6 +245,13 @@ class HomeActivity : AppCompatActivity() {
             }
     }
 
+    fun stringToDate(dateString: String): Date? {
+        return try {
+            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(dateString)
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     private fun setupGalery(){
         galery = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -213,6 +260,55 @@ class HomeActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, getString(R.string.no_image_selected), Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun solicitarLocalizacao() {
+        if (ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+            &&
+            ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_COARSE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        } else {
+            val localizacaoHelper = LocalizacaoHelper(applicationContext)
+            localizacaoHelper.obterLocalizacaoAtual(this)
+        }
+    }
+
+    override fun onLocalizacaoRecebida(endereco: Address, latitude: Double, longitude: Double) {
+        runOnUiThread {
+           currentDialogBinding!!.locationPost.text =  endereco.subAdminArea + ", " + endereco.adminArea
+            currentDialogBinding!!.confirmButton.isEnabled = true
+        }
+    }
+
+    override fun onErro(mensagem: String) {
+        Toast.makeText(this, mensagem, Toast.LENGTH_SHORT).show()
+        currentDialogBinding!!.locationPost.text = "Sem Localização"
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions,
+            grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE &&
+            grantResults.isNotEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            solicitarLocalizacao()
+        } else {
+            Toast.makeText(this, "Permissão de localização negada", Toast.LENGTH_SHORT).show()
+            currentDialogBinding!!.locationPost.text = "Sem Localização"
         }
     }
 }

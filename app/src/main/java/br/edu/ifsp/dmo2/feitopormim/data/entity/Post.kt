@@ -1,9 +1,8 @@
 package br.edu.ifsp.dmo2.feitopormim.data.entity
 
 import android.graphics.Bitmap
-import java.util.Date
 
-class Post (private val username: String, private val date: String, private val descricao: String, private val foto: Bitmap){
+class Post (private val username: String, private val date: String, private val descricao: String, private val location: String, private val foto: Bitmap){
     public fun getDescricao() : String{
         return descricao
     }
@@ -17,5 +16,9 @@ class Post (private val username: String, private val date: String, private val 
 
     public fun getDate(): String{
         return date
+    }
+
+    public fun getLocation(): String{
+        return location
     }
 }

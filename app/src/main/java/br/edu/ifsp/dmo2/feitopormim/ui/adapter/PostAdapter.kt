@@ -17,6 +17,7 @@ class PostAdapter(private val posts: Array<Post>) :
         val txtPost : TextView = view.findViewById(R.id.txt_descricao)
         val usernamePost : TextView = view.findViewById(R.id.username_post)
         val dateTimePost : TextView = view.findViewById(R.id.datetime_post)
+        val locationPost : TextView = view.findViewById(R.id.location_text_post)
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -30,6 +31,7 @@ class PostAdapter(private val posts: Array<Post>) :
         holder.txtPost.text = posts[position].getDescricao()
         holder.imgPost.setImageBitmap(posts[position].getFoto())
         holder.usernamePost.text = posts[position].getUsername()
-        holder.dateTimePost.text = posts[position].getDate().toString()
+        holder.dateTimePost.text = posts[position].getDate()
+        holder.locationPost.text = posts[position].getLocation()
     }
 }
