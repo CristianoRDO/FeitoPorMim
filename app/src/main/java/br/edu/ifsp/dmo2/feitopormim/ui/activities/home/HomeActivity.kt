@@ -38,6 +38,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.drawable.VectorDrawable
 import androidx.core.app.ActivityCompat
+import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 
 class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
@@ -47,6 +48,9 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
     private val firebaseAuth = FirebaseAuth.getInstance()
     private lateinit var adapter: PostAdapter
     private lateinit var galery: ActivityResultLauncher<PickVisualMediaRequest>
+    private var ultimoTimestamp: Timestamp? = null
+    private var location = ""
+    private var isLoading = false
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,8 +107,34 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
 
     private fun configListeners(){
         binding.loadFeedButton.setOnClickListener {
-            loadFeed()
+            ultimoTimestamp = null
+            adapter.limparPosts()
         }
+
+        binding.searchIcon.setOnClickListener{
+            location = binding.searchInput.text.toString()
+            ultimoTimestamp = null
+            adapter.limparPosts()
+        }
+
+        binding.listPosts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val totalItemCount = layoutManager.itemCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                Log.d("LoadFeed", "Total de itens: $totalItemCount, Último item visível: $lastVisibleItem")
+
+                // Carregar mais apenas quando o usuário chegar no último item visível da lista carregada
+                if (!isLoading && lastVisibleItem == totalItemCount - 1) {
+                    Log.d("LoadFeed", "Carregando mais posts...")
+                    isLoading = true
+                    loadFeed()
+                }
+            }
+        })
 
         binding.buttonAddPost.setOnClickListener {
 
@@ -182,72 +212,106 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
 
     private fun loadFeed() {
         val db = Firebase.firestore
-        db.collection("posts")
-            .orderBy("datePost", Query.Direction.DESCENDING)
-            .get()
+
+        //val location = "Araraquara, São Paulo"
+
+        var query: Query = if (location.equals("")) {
+            db.collection("posts")
+                .orderBy("datePost", Query.Direction.DESCENDING)
+                .limit(5)
+        } else {
+            db.collection("posts")
+                .whereEqualTo("locationPost", location)
+                .orderBy("datePost", Query.Direction.DESCENDING)
+                .limit(5)
+        }
+
+        if (ultimoTimestamp != null) {
+            Log.d("LoadFeed", "Buscando posts após o timestamp: $ultimoTimestamp")
+            query = query.startAfter(ultimoTimestamp!!)
+        }
+
+        query.get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val document = task.result
-                    val postsTemp = ArrayList<Post>() // Lista temporária para armazenar os posts enquanto recupera os nomes
+                    if (!document.isEmpty) {
+                        Log.d("LoadFeed", "Documentos carregados com sucesso.")
+                        // Atualiza o último timestamp
+                        ultimoTimestamp = document.documents.last().getTimestamp("datePost")
+                        Log.d("LoadFeed", "Último timestamp atualizado: $ultimoTimestamp")
 
-                    val postFetchCount = document.documents.size
-                    var postsFetched = 0 // Contador para verificar quando todos os posts foram processados
+                        val postsTemp = ArrayList<Post>()
+                        val postFetchCount = document.documents.size
+                        var postsFetched = 0
 
-                    for (document in document.documents) {
-                        val userPost = document.data!!["userPost"].toString()
-                        var usernamePost = ""
+                        for (doc in document.documents) {
+                            val userPost = doc.getString("userPost") ?: continue
+                            var usernamePost = ""
 
-                        Log.d("Username", "Buscando usuário com o email: $userPost")
+                            Log.d("LoadFeed", "Buscando dados para o usuário: $userPost")
 
-                        // Consulta assíncrona para buscar o nome do usuário
-                        db.collection("user")
-                            .document(userPost) // O documento da coleção "user" é o e-mail do usuário
-                            .get()
-                            .addOnSuccessListener { userDocument ->
-                                if (userDocument.exists()) {
-                                    usernamePost = userDocument.data!!["username"].toString()
-                                    Log.d("Username", "Nome do usuário: $usernamePost")
-                                } else {
-                                    Log.d("Username", "Usuário não encontrado")
+                            db.collection("user")
+                                .document(userPost)
+                                .get()
+                                .addOnSuccessListener { userDocument ->
+                                    if (userDocument.exists()) {
+                                        usernamePost = userDocument.getString("username") ?: ""
+                                        Log.d("LoadFeed", "Usuário encontrado: $usernamePost")
+                                    }
+
+                                    val imageString = doc.getString("imagePost") ?: ""
+                                    val imagePost = Base64Converter.stringToBitmap(imageString)
+                                    val textPost = doc.getString("textPost") ?: ""
+                                    val locationPost = doc.getString("locationPost") ?: ""
+
+                                    val datePost = doc.getTimestamp("datePost")
+                                    val date: Date? = datePost?.toDate()
+                                    val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+                                    val dataFormatada: String = formatter.format(date)
+
+                                    postsTemp.add(Post(usernamePost, dataFormatada, textPost, locationPost, imagePost))
+
+                                    postsFetched++
+                                    if (postsFetched == postFetchCount) {
+                                        Log.d("LoadFeed", "Todos os posts foram carregados.")
+                                        postsTemp.sortByDescending {
+                                            stringToDate(it.getDate())
+                                        }
+
+                                        if (::adapter.isInitialized.not()) {
+                                            adapter = PostAdapter(postsTemp.toMutableList())
+                                            binding.listPosts.layoutManager = LinearLayoutManager(this)
+                                            binding.listPosts.adapter = adapter
+                                        } else {
+                                            adapter.adicionarPosts(postsTemp) // Adiciona à lista existente
+                                        }
+                                        isLoading = false // Libera para novos carregamentos
+                                    }
                                 }
-
-                                // Agora, adicionar o post à lista após obter o nome do usuário
-                                val imageString = document.data!!["imagePost"].toString()
-                                val imagePost = Base64Converter.stringToBitmap(imageString)
-                                val textPost = document.data!!["textPost"].toString()
-                                val locationPost = document.data!!["locationPost"].toString()
-
-                                val datePost = document.getTimestamp("datePost")
-                                val date: Date? = datePost?.toDate()
-                                val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                                val dataFormatada: String = formatter.format(date)
-
-                                postsTemp.add(Post(usernamePost, dataFormatada, textPost, locationPost, imagePost))
-
-                                postsFetched++
-                                if (postsFetched == postFetchCount) {
-                                    // Ordena os posts localmente antes de adicionar ao adaptador
-                                    postsTemp.sortByDescending {
-                                        stringToDate(it.getDate())
-                                    } // Ordena pela data (seja no formato timestamp ou data formatada)
-
-                                    // Quando todos os posts forem processados, defina o adaptador
-                                    adapter = PostAdapter(postsTemp.toTypedArray())
-                                    binding.listPosts.layoutManager = LinearLayoutManager(this)
-                                    binding.listPosts.adapter = adapter
+                                .addOnFailureListener { exception ->
+                                    Log.d("LoadFeed", "Erro ao buscar usuário: ", exception)
+                                    postsFetched++
+                                    if (postsFetched == postFetchCount) {
+                                        isLoading = false
+                                    }
                                 }
-                            }
-                            .addOnFailureListener { exception ->
-                                Log.d("Username", "Erro ao buscar usuário: ", exception)
-                            }
+                        }
+                    } else {
+                        Log.d("LoadFeed", "Nenhum documento encontrado.")
+                        isLoading = false
                     }
+                } else {
+                    Log.e("LoadFeed", "Erro ao carregar posts", task.exception)
+                    isLoading = false
                 }
             }
     }
 
+
     fun stringToDate(dateString: String): Date? {
         return try {
-            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(dateString)
+            SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).parse(dateString)
         } catch (e: Exception) {
             null
         }
