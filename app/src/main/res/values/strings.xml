@@ -21,6 +21,7 @@
     <string name="logout_button_text">Logout</string>
     <string name="load_feed_button_text">Carregar Feed</string>
     <string name="register_button_text">Cadastrar</string>
+    <string name="advance_button_text">Avançar</string>
     <string name="save_button_text">Salvar</string>
     <string name="login_icon_content_description">Ícone de Login</string>
     <string name="register_icon_content_description">Ícone de Cadastro</string>
@@ -36,5 +37,19 @@
     <string name="user_not_found">Usuário Não Encontrado</string>
     <string name="error_loading_user_data">Erro ao Carregar os Dados do Usuário</string>
     <string name="no_image_selected">Nenhuma Imagem Selecionada</string>
+    <string name="fill_description_field">Preencha o Campo Descrição.</string>
+    <string name="no_post_image_added">Nenhuma Imagem Adicionada ao Post.</string>
+    <string name="error_converting_image">Erro ao Converter a Imagem.</string>
+    <string name="location_permission_denied">Permissão de Localização Negada.</string>
+    <string name="no_location">Sem Localização</string>
+    <string name="data_updated_successfully">Dados Atualizados com Sucesso!</string>
+    <string name="error_updating_data">Erros ao Atualizar os Dados.</string>
+    <string name="cancel">Cancelar</string>
+    <string name="confirm">Confirmar</string>
+    <string name="title_what_are_you_thinking">No que você está pensando?</string>
+    <string name="save_location">Gravar Localização</string>
+    <string name="new_post">Novo Post</string>
+    <string name="initial_page">Página Inicial</string>
+    <string name="search_by_location">Buscar por localização...</string>
 
 </resources>

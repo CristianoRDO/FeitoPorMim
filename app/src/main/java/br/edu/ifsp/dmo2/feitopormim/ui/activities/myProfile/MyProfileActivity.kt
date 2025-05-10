@@ -88,7 +88,7 @@ class MyProfileActivity : AppCompatActivity() {
 
         if (user != null) {
             val db = Firebase.firestore
-            db.collection("user").document(user!!.email.toString()).get()
+            db.collection("user").document(user.email.toString()).get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val document = task.result
@@ -139,47 +139,56 @@ class MyProfileActivity : AppCompatActivity() {
                 val username = binding.inputUsername.text.toString()
                 val fullname = binding.inputFullname.text.toString()
 
+                if (username.isBlank() || fullname.isBlank()) {
+                    Toast.makeText(this, getString(R.string.fill_all_fields), Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
                 val updateData: MutableMap<String, Any> = hashMapOf(
                     "fullname" to fullname,
                     "username" to username,
                     "picture" to imageBase64
                 )
 
-                // Se o checkbox estiver marcado, tentar trocar a senha primeiro
                 if (binding.myCheckBox.isChecked) {
                     val currentPassword = binding.inputPassword.text.toString()
                     val newPassword = binding.inputNewPassword.text.toString()
 
-                    if (currentPassword.isBlank() || newPassword.isBlank() || username.isBlank() || fullname.isBlank() ) {
+                    if (binding.myCheckBox.isChecked && (currentPassword.isBlank() || newPassword.isBlank())) {
                         Toast.makeText(this, getString(R.string.fill_all_password_fields), Toast.LENGTH_SHORT).show()
-                    } else{
-                        val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
-                        user.reauthenticate(credential)
-                            .addOnSuccessListener {
-                                user.updatePassword(newPassword)
-                                    .addOnSuccessListener {
-                                        val userDocRef = db.collection("user").document(user.email!!)
-                                        userDocRef.update(updateData)
-                                            .addOnSuccessListener {
-                                                Toast.makeText(this, "Dados Atualizados com Sucesso!", Toast.LENGTH_SHORT).show()
-                                                clearInputPassword()
-                                            }
-                                            .addOnFailureListener { exception ->
-                                                Toast.makeText(this, "Erros ao Atualizar os Dados.", Toast.LENGTH_SHORT).show()
-                                                Log.e("Firestore", "Erro ao atualizar dados: ${exception.message}")
-                                            }
-                                    }
-                                    .addOnFailureListener { exception ->
-                                        Log.e("Auth", "Erro ao alterar senha: ${exception.message}")
-                                    }
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(this, getString(R.string.incorrect_current_password), Toast.LENGTH_SHORT).show()
-                            }
+                        return@setOnClickListener
                     }
+
+                    val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
+                    user.reauthenticate(credential)
+                        .addOnSuccessListener {
+                            user.updatePassword(newPassword)
+                                .addOnSuccessListener {
+                                    val userDocRef = db.collection("user").document(user.email!!)
+                                    userDocRef.update(updateData)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this, getString(R.string.data_updated_successfully), Toast.LENGTH_SHORT).show()
+                                            clearInputPassword()
+                                        }
+                                        .addOnFailureListener { exception ->
+                                            Toast.makeText(this, getString(R.string.error_updating_data), Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                                .addOnFailureListener { exception ->
+                                    Log.e("Auth", "Erro ao alterar senha: ${exception.message}")
+                                }
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, getString(R.string.incorrect_current_password), Toast.LENGTH_SHORT).show()
+                        }
                 } else {
                     val userDocRef = db.collection("user").document(user.email!!)
-                    userDocRef.update(updateData)
+                    userDocRef.update(updateData).addOnSuccessListener {
+                        Toast.makeText(this, getString(R.string.data_updated_successfully), Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener { exception ->
+                        Toast.makeText(this, getString(R.string.error_updating_data), Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }

@@ -108,15 +108,13 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
     }
 
     private fun configListeners(){
-        binding.loadFeedButton.setOnClickListener {
+        binding.reloadButton.setOnClickListener {
             clearFeed()
-            loadFeed()
         }
 
         binding.searchIcon.setOnClickListener{
             location = binding.searchInput.text.toString()
             clearFeed()
-            loadFeed()
         }
 
         binding.listPosts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -174,11 +172,11 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
 
                     when {
                         textPost.isBlank() -> {
-                            Toast.makeText(this, "Preencha o campo Descrição.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, getString(R.string.fill_description_field), Toast.LENGTH_SHORT).show()
                             return@setOnClickListener
                         }
                         drawable is VectorDrawable || drawable is VectorDrawableCompat -> {
-                            Toast.makeText(this, "Nenhuma imagem adicionada ao post.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, getString(R.string.no_image_selected), Toast.LENGTH_SHORT).show()
                             return@setOnClickListener
                         }
                     }
@@ -186,7 +184,7 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
                     val imagePost = Base64Converter.drawableToString(drawable)
 
                     if (imagePost.isBlank()) {
-                        Toast.makeText(this, "Erro ao converter a imagem.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, getString(R.string.error_converting_image), Toast.LENGTH_SHORT).show()
                         return@setOnClickListener
                     }
 
@@ -301,6 +299,7 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
     private fun clearFeed(){
         ultimoTimestamp = null
         adapter.clearPosts()
+        loadFeed()
     }
 
     private fun stringToDate(dateString: String): Date? {
@@ -350,7 +349,7 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
 
     override fun onErro(mensagem: String) {
         Toast.makeText(this, mensagem, Toast.LENGTH_SHORT).show()
-        currentDialogBinding!!.locationPost.text = "Sem Localização"
+        currentDialogBinding!!.locationPost.text = getString(R.string.no_location)
     }
 
     override fun onRequestPermissionsResult(
@@ -365,8 +364,8 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
             grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             solicitarLocalizacao()
         } else {
-            Toast.makeText(this, "Permissão de localização negada", Toast.LENGTH_SHORT).show()
-            currentDialogBinding!!.locationPost.text = "Sem Localização"
+            Toast.makeText(this, getString(R.string.location_permission_denied), Toast.LENGTH_SHORT).show()
+            currentDialogBinding!!.locationPost.text = getString(R.string.no_location)
         }
     }
 }

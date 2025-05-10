@@ -21,4 +21,9 @@
         <!-- Cor de fundo do layout personalizado -->
         <item name="android:background">@color/white</item>
     </style>
+
+    <style name="RoundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
 </resources>

@@ -9,7 +9,7 @@
         android:id="@+id/materialToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/button_color"
+        android:background="@color/deep_steel_blue"
         app:title="FeitoPorMim"
         app:titleTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"

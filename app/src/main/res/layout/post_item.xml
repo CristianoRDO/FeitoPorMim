@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="320dp"
+        android:layout_width="340dp"
         android:layout_height="wrap_content"
         app:cardCornerRadius="25dp"
         app:cardElevation="10dp"
@@ -18,13 +18,15 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp">
+            android:padding="24dp">
 
             <TextView
                 android:id="@+id/username_post"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Fulano de Tal"
+                android:textStyle="bold"
+                android:textColor="@color/deep_steel_blue"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -35,28 +37,32 @@
                 android:id="@+id/datetime_post"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/deep_steel_blue"
                 android:text="20/12/2025"
                 android:textSize="12sp"
                 app:layout_constraintTop_toTopOf="@id/username_post"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/img_post"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/empty_profile"
                 app:layout_constraintTop_toBottomOf="@id/username_post"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:shapeAppearanceOverlay="@style/RoundedImageView" />
 
             <ImageView
                 android:id="@+id/location_post"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:src="@drawable/ic_location"
+                app:tint="@color/red"
                 app:layout_constraintTop_toBottomOf="@id/img_post"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -67,6 +73,7 @@
                 android:layout_marginStart="4dp"
                 android:text="Araraquara, SP"
                 android:textSize="12sp"
+                android:textColor="@color/deep_steel_blue"
                 app:layout_constraintBottom_toBottomOf="@+id/location_post"
                 app:layout_constraintStart_toEndOf="@id/location_post"
                 app:layout_constraintTop_toTopOf="@id/location_post" />
@@ -76,8 +83,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:lineSpacingExtra="4dp"
                 android:text="Texto dinâmico que pode ser longo ou curto"
-                android:textSize="16sp"
+                android:textSize="14sp"
+                android:textColor="@color/deep_steel_blue"
                 app:layout_constraintTop_toBottomOf="@id/location_text_post"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />

@@ -2,11 +2,15 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="background_app">#1E2044</color>
+    <color name="background_app">#0b1e31</color>
     <color name="blue">#0070BB</color>
     <color name="green">#4CBB17</color>
     <color name="button_color">#0070BB</color>
     <color name="text_hint">#292936</color>
     <color name="gray">#BEBFC5</color>
     <color name="red">#FF0000</color>
+    <color name="deep_steel_blue">#203347</color>
+    <color name="charcoal_blue">#36475c</color>
+    <color name="slate_indigo">#4b5c72</color>
+    <color name="dusty_denim">#607087</color>
 </resources>

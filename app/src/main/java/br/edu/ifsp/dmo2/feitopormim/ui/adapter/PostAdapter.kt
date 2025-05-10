@@ -12,13 +12,12 @@ import br.edu.ifsp.dmo2.feitopormim.databinding.PostItemBinding
 class PostAdapter(private val posts: MutableList<Post>) :
     RecyclerView.Adapter<PostAdapter.ViewHolder>() {
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val binding: PostItemBinding = PostItemBinding.bind(view)
-    }
+    class ViewHolder(val binding: PostItemBinding) : RecyclerView.ViewHolder(binding.root)
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.post_item, parent, false)
-        return ViewHolder(view)
+        val binding = PostItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int = posts.size

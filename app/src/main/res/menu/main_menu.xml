@@ -4,17 +4,17 @@
 
     <item
         android:id="@+id/option_menu_home_page"
-        android:title="Página Inicial"
+        android:title="@string/initial_page"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/option_menu_my_profile"
-        android:title="Meu perfil"
+        android:title="@string/my_profile"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/option_menu_logout"
-        android:title="Logout"
+        android:title="@string/logout_button_text"
         android:background="@color/button_color"
         app:showAsAction="never" />
 

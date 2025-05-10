@@ -46,13 +46,9 @@ class SignUpActivity : AppCompatActivity() {
 
         binding.btnCadastrar.setOnClickListener{
 
-            /*startActivity(Intent(this, PostActivity::class.java))
-            finish()*/
-
             val email = binding.email.text.toString()
             val password = binding.senha.text.toString()
             val confPassword = binding.confirmSenha.text.toString()
-
 
             if(email.isNotBlank() && password.isNotBlank() && confPassword.isNotBlank()){
                 if(password == confPassword){
