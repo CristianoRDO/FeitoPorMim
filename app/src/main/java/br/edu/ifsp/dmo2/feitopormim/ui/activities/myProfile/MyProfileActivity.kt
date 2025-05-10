@@ -124,8 +124,7 @@ class MyProfileActivity : AppCompatActivity() {
                 binding.textInputContainer3.visibility = View.VISIBLE
                 binding.textInputContainer4.visibility = View.VISIBLE
             } else {
-                binding.textInputContainer3.visibility = View.GONE
-                binding.textInputContainer4.visibility = View.GONE
+                clearInputPassword()
             }
         }
 
@@ -175,7 +174,8 @@ class MyProfileActivity : AppCompatActivity() {
                                         }
                                 }
                                 .addOnFailureListener { exception ->
-                                    Log.e("Auth", "Erro ao alterar senha: ${exception.message}")
+                                    Toast.makeText(this,
+                                        getString(R.string.password_minimum_length), Toast.LENGTH_SHORT).show()
                                 }
                         }
                         .addOnFailureListener {
@@ -208,5 +208,7 @@ class MyProfileActivity : AppCompatActivity() {
         binding.myCheckBox.isChecked = false
         binding.textInputContainer3.visibility = View.GONE
         binding.textInputContainer4.visibility = View.GONE
+        binding.inputPassword.setText("")
+        binding.inputNewPassword.setText("")
     }
 }

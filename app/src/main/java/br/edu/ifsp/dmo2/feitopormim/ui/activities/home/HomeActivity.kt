@@ -148,11 +148,11 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
 
             dialogBinding.myCheckBox.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    dialogBinding.locationPost.setText("Buscando localização...")
+                    dialogBinding.locationPost.setText(getString(R.string.searching_location))
                     dialogBinding.confirmButton.isEnabled = false
                     solicitarLocalizacao()
                 } else {
-                    dialogBinding.locationPost.setText("Sem Localização")
+                    dialogBinding.locationPost.setText(getString(R.string.no_location))
                 }
             }
 
@@ -166,7 +166,7 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
 
                     val email = firebaseAuth.currentUser!!.email.toString()
                     val textPost = dialogBinding.inputTextPost.text.toString().trim()
-                    val locationPost = dialogBinding.locationPost.text.toString().ifBlank { "Sem Localização" }
+                    val locationPost = dialogBinding.locationPost.text.toString().ifBlank { getString(R.string.no_location) }
                     val db = com.google.firebase.Firebase.firestore
                     val drawable = dialogBinding.imagePost.drawable
 
@@ -277,7 +277,7 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
         val textPost = doc.getString("textPost") ?: ""
         val locationPost = doc.getString("locationPost") ?: ""
         val date = doc.getTimestamp("datePost")?.toDate()
-        val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val formattedDate = formatter.format(date)
 
         return Post(username, formattedDate, textPost, locationPost, imagePost)

@@ -51,5 +51,7 @@
     <string name="new_post">Novo Post</string>
     <string name="initial_page">Página Inicial</string>
     <string name="search_by_location">Buscar por localização...</string>
+    <string name="searching_location">Buscando localização...</string>
+    <string name="password_minimum_length">A Senha Deve ter Pelo Menos 6 Caracteres.</string>
 
 </resources>
