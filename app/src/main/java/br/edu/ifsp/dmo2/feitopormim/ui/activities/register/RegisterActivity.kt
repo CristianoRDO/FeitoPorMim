@@ -44,7 +44,7 @@ class RegisterActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.registerButton.setOnClickListener{
+        /*binding.registerButton.setOnClickListener{
             val email = binding.inputEmail.text.toString()
             val password = binding.inputPassword.text.toString()
             val confPassword = binding.inputConfirmPassword.text.toString()
@@ -65,6 +65,38 @@ class RegisterActivity : AppCompatActivity() {
                     Toast.makeText(this, getString(R.string.passwords_do_not_match), Toast.LENGTH_LONG).show()
                 }
             }else{
+                Toast.makeText(this, getString(R.string.fill_all_fields), Toast.LENGTH_LONG).show()
+            }
+        }*/
+
+        binding.registerButton.setOnClickListener {
+            val email = binding.inputEmail.text.toString()
+            val password = binding.inputPassword.text.toString()
+            val confPassword = binding.inputConfirmPassword.text.toString()
+
+            if (email.isNotBlank() && password.isNotBlank() && confPassword.isNotBlank()) {
+
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    Toast.makeText(this, getString(R.string.invalid_email), Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+
+                if (password.length < 6) {
+                    Toast.makeText(this, getString(R.string.password_too_short), Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+
+                if (password == confPassword) {
+                    val intent = Intent(this, ProfileActivity::class.java).apply {
+                        putExtra("email", email)
+                        putExtra("password", password)
+                    }
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Toast.makeText(this, getString(R.string.passwords_do_not_match), Toast.LENGTH_LONG).show()
+                }
+            } else {
                 Toast.makeText(this, getString(R.string.fill_all_fields), Toast.LENGTH_LONG).show()
             }
         }

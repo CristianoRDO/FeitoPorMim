@@ -53,5 +53,8 @@
     <string name="search_by_location">Buscar por localização...</string>
     <string name="searching_location">Buscando localização...</string>
     <string name="password_minimum_length">A Senha Deve ter Pelo Menos 6 Caracteres.</string>
+    <string name="password_too_short">A Senha Deve Possuir Ao Menos 6 Caracteres.</string>
+    <string name="invalid_email">Formato de E-mail Inválido</string>
+    <string name="register_error">Erro no Cadastro</string>
 
 </resources>

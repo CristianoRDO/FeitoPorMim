@@ -41,10 +41,20 @@ class LoginActivity : AppCompatActivity() {
 
         binding.loginButton.setOnClickListener{
             var email = binding.inputEmail.text.toString()
-            var senha = binding.inputPassword.text.toString()
+            var password = binding.inputPassword.text.toString()
+
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(this, getString(R.string.invalid_email), Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            if (password.length < 6) {
+                Toast.makeText(this, getString(R.string.password_too_short), Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
 
             firebaseAuth
-                .signInWithEmailAndPassword(email, senha)
+                .signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         startActivity(Intent(this, HomeActivity::class.java))
