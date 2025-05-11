@@ -54,6 +54,7 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
     private var location = ""
     private var isLoading = false
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001
+    private var primeiroCarregamento = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,6 +70,7 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
         configListeners()
         loadFeed()
     }
+
 
     private fun initializeActionBar(){
         addMenuProvider(
@@ -128,6 +130,7 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
                 // Carregar mais apenas quando o usuário chegar no último item visível da lista carregada
                 if (!isLoading && lastVisibleItem == totalItemCount - 1) {
                     isLoading = true
+                    Log.d("Feed", "Estou na funcao scrooll: $ultimoTimestamp")
                     loadFeed()
                 }
             }
@@ -211,26 +214,45 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
         val db = Firebase.firestore
         var query = createQueryBase(db)
 
+        // Verifica se existe um timestamp do último post carregado para usar como referência (paginação)
         if (ultimoTimestamp != null) {
+            Log.d("Feed", "Último timestamp encontrado: $ultimoTimestamp")
             query = query.startAfter(ultimoTimestamp!!)
+        } else {
+            Log.d("Feed", "Nenhum timestamp anterior encontrado, carregando do início")
         }
 
+        // Executa a consulta ao Firestore
         query.get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val document = task.result
                     if (!document.isEmpty) {
+                        Log.d("Feed", "Posts carregados: ${document.size()}")
 
+                        // Atualiza o timestamp com o do último documento para controle de paginação
                         ultimoTimestamp = document.documents.last().getTimestamp("datePost")
+                        Log.d("Feed", "Novo último timestamp: $ultimoTimestamp")
+
+                        // Processa os documentos carregados
                         processPosts(db, document.documents)
                     } else {
-                        isLoading = false
+                            if(primeiroCarregamento){
+                                adapter = PostAdapter(mutableListOf())
+                                binding.listPosts.layoutManager = LinearLayoutManager(this)
+                                binding.listPosts.adapter = adapter
+                                primeiroCarregamento = false
+                            }
+                            Log.d("Feed", "Nenhum post novo encontrado")
+                            isLoading = false
                     }
                 } else {
+                    Log.e("Feed", "Erro ao carregar feed: ${task.exception}")
                     isLoading = false
                 }
             }
     }
+
 
     private fun createQueryBase(db: FirebaseFirestore): Query {
         val base = db.collection("posts")
@@ -246,26 +268,40 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
         val totalPosts = documents.size
         var postsProcessados = 0
 
+        Log.d("processPosts", "Iniciando o processamento de ${totalPosts} posts.")
+
         for (doc in documents) {
             val userEmail = doc.getString("userPost") ?: continue // Caso não encontre o usuário, passa para a próxima iteração.
 
+            Log.d("processPosts", "Processando post do usuário: $userEmail")
+
+            // Processa o post
             db.collection("user").document(userEmail)
                 .get()
                 .addOnSuccessListener { userDoc ->
                     val username = userDoc.getString("username") ?: ""
+                    Log.d("processPosts", "Usuário encontrado: $username")
+
                     postsTemp.add(createPost(doc, username))
                     postsProcessados++
 
+                    Log.d("processPosts", "Post processado. Posts processados: $postsProcessados/$totalPosts")
+
                     if (postsProcessados == totalPosts) {
-                        finishLoading(postsTemp)
+                        Log.d("processPosts", "Todos os posts foram processados. Chamando finishLoading.")
+                        finishLoading(postsTemp) // Finaliza o carregamento após processar todos os posts
                     }
                 }
                 .addOnFailureListener { e ->
+                    Log.d("processPosts", "Falha ao buscar dados do usuário. Usando nome de usuário vazio.")
                     postsTemp.add(createPost(doc, ""))
                     postsProcessados++
 
+                    Log.d("processPosts", "Post processado com falha. Posts processados: $postsProcessados/$totalPosts")
+
                     if (postsProcessados == totalPosts) {
-                        finishLoading(postsTemp)
+                        Log.d("processPosts", "Todos os posts foram processados (com falha). Chamando finishLoading.")
+                        finishLoading(postsTemp) // Finaliza o carregamento após processar todos os posts
                     }
                 }
         }
@@ -286,10 +322,12 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
     private fun finishLoading(posts: List<Post>) {
         val sortedPosts = posts.sortedByDescending { stringToDate(it.getDate()) }
 
-        if (!::adapter.isInitialized) {
+        if (!::adapter.isInitialized && primeiroCarregamento) {
             adapter = PostAdapter(sortedPosts.toMutableList())
             binding.listPosts.layoutManager = LinearLayoutManager(this)
             binding.listPosts.adapter = adapter
+            primeiroCarregamento = false
+            Log.d("processPosts", "Adapter Inicialiazado)")
         } else {
             adapter.addPosts(sortedPosts)
         }
@@ -297,6 +335,7 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
     }
 
     private fun clearFeed(){
+        isLoading = true
         ultimoTimestamp = null
         adapter.clearPosts()
         loadFeed()

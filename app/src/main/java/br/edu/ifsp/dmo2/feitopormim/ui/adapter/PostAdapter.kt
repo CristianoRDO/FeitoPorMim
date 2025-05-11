@@ -42,7 +42,8 @@ class PostAdapter(private val posts: MutableList<Post>) :
     }
 
     fun clearPosts() {
+        val size = posts.size
         posts.clear()
-        notifyDataSetChanged()
+        notifyItemRangeRemoved(0, size)
     }
 }
