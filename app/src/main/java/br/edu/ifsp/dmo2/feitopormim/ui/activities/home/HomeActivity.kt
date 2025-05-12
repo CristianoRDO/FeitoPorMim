@@ -130,7 +130,6 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
                 // Carregar mais apenas quando o usuário chegar no último item visível da lista carregada
                 if (!isLoading && lastVisibleItem == totalItemCount - 1) {
                     isLoading = true
-                    Log.d("Feed", "Estou na funcao scrooll: $ultimoTimestamp")
                     loadFeed()
                 }
             }
@@ -216,10 +215,7 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
 
         // Verifica se existe um timestamp do último post carregado para usar como referência (paginação)
         if (ultimoTimestamp != null) {
-            Log.d("Feed", "Último timestamp encontrado: $ultimoTimestamp")
             query = query.startAfter(ultimoTimestamp!!)
-        } else {
-            Log.d("Feed", "Nenhum timestamp anterior encontrado, carregando do início")
         }
 
         // Executa a consulta ao Firestore
@@ -228,11 +224,9 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
                 if (task.isSuccessful) {
                     val document = task.result
                     if (!document.isEmpty) {
-                        Log.d("Feed", "Posts carregados: ${document.size()}")
 
                         // Atualiza o timestamp com o do último documento para controle de paginação
                         ultimoTimestamp = document.documents.last().getTimestamp("datePost")
-                        Log.d("Feed", "Novo último timestamp: $ultimoTimestamp")
 
                         // Processa os documentos carregados
                         processPosts(db, document.documents)
@@ -243,11 +237,10 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
                                 binding.listPosts.adapter = adapter
                                 primeiroCarregamento = false
                             }
-                            Log.d("Feed", "Nenhum post novo encontrado")
+
                             isLoading = false
                     }
                 } else {
-                    Log.e("Feed", "Erro ao carregar feed: ${task.exception}")
                     isLoading = false
                 }
             }
@@ -268,39 +261,28 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
         val totalPosts = documents.size
         var postsProcessados = 0
 
-        Log.d("processPosts", "Iniciando o processamento de ${totalPosts} posts.")
-
         for (doc in documents) {
             val userEmail = doc.getString("userPost") ?: continue // Caso não encontre o usuário, passa para a próxima iteração.
-
-            Log.d("processPosts", "Processando post do usuário: $userEmail")
 
             // Processa o post
             db.collection("user").document(userEmail)
                 .get()
                 .addOnSuccessListener { userDoc ->
                     val username = userDoc.getString("username") ?: ""
-                    Log.d("processPosts", "Usuário encontrado: $username")
 
                     postsTemp.add(createPost(doc, username))
                     postsProcessados++
 
-                    Log.d("processPosts", "Post processado. Posts processados: $postsProcessados/$totalPosts")
 
                     if (postsProcessados == totalPosts) {
-                        Log.d("processPosts", "Todos os posts foram processados. Chamando finishLoading.")
                         finishLoading(postsTemp) // Finaliza o carregamento após processar todos os posts
                     }
                 }
                 .addOnFailureListener { e ->
-                    Log.d("processPosts", "Falha ao buscar dados do usuário. Usando nome de usuário vazio.")
                     postsTemp.add(createPost(doc, ""))
                     postsProcessados++
 
-                    Log.d("processPosts", "Post processado com falha. Posts processados: $postsProcessados/$totalPosts")
-
                     if (postsProcessados == totalPosts) {
-                        Log.d("processPosts", "Todos os posts foram processados (com falha). Chamando finishLoading.")
                         finishLoading(postsTemp) // Finaliza o carregamento após processar todos os posts
                     }
                 }
@@ -389,6 +371,7 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
     override fun onErro(mensagem: String) {
         Toast.makeText(this, mensagem, Toast.LENGTH_SHORT).show()
         currentDialogBinding!!.locationPost.text = getString(R.string.no_location)
+        currentDialogBinding!!.confirmButton.isEnabled = true
     }
 
     override fun onRequestPermissionsResult(
@@ -405,6 +388,7 @@ class HomeActivity : AppCompatActivity(), LocalizacaoHelper.Callback {
         } else {
             Toast.makeText(this, getString(R.string.location_permission_denied), Toast.LENGTH_SHORT).show()
             currentDialogBinding!!.locationPost.text = getString(R.string.no_location)
+            currentDialogBinding!!.confirmButton.isEnabled = true
         }
     }
 }
